@@ -30,14 +30,14 @@ public class CsvReaderService {
     @Autowired
     private KafkaTemplate<String,Object> template;
 
-    public void sendMessageToTopic(List<User> users)
+    public void sendMessageToTopic( List<User> userList)
     {
-        final CompletableFuture<SendResult<String, Object>> future = template.send("demo-topic-springBoot", users);
+        final CompletableFuture<SendResult<String, Object>> future = template.send("add_users", userList);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
                 System.out.println("Sent message "  + " to partition " + result.getRecordMetadata().partition() + " with offset " + result.getRecordMetadata().offset());
             } else {
-                System.out.println("Unable to send message '" + users + "': " + ex.getMessage());
+                System.out.println("Unable to send message '" + userList + "': " + ex.getMessage());
             }
         });
     }

@@ -21,24 +21,20 @@ public class KafkaConfig {
     // Admin for managing Kafka topics and configurations
     @Bean
     public KafkaAdmin kafkaAdmin() {
-        return new KafkaAdmin(Map.of("bootstrap.servers", "localhost:9092,localhost:9093,localhost:9094"));
+        return new KafkaAdmin(Map.of("bootstrap.servers", "localhost:9092,localhost:9093"));
     }
 
     // Create a new topic with 3 partitions and replication factor of 3
     @Bean
     public NewTopic newTopic() {
-        return new NewTopic("user_add", 3, (short) 3) // 3 replicas
-                .configs(Map.of(
-                        TopicConfig.RETENTION_MS_CONFIG, "172800000", // 2 days retention
-                        TopicConfig.RETENTION_BYTES_CONFIG, "10485760" // 10MB retention size
-                ));
+        return new NewTopic("add_users", 4, (short) 2) ;
     }
 
-    // Producer factory settings, including acks and retries
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         return new DefaultKafkaProducerFactory<>(Map.of(
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094",
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093",
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class,
                 ProducerConfig.ACKS_CONFIG, "all", // 'all' ensures all replicas acknowledge
@@ -49,7 +45,7 @@ public class KafkaConfig {
         ));
     }
 
-    // Kafka template for sending messages
+
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
