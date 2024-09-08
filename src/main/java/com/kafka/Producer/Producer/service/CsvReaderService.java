@@ -35,7 +35,7 @@ public class CsvReaderService {
         final CompletableFuture<SendResult<String, Object>> future = template.send("add_users", userList);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                System.out.println("Sent message "  + " to partition " + result.getRecordMetadata().partition() + " with offset " + result.getRecordMetadata().offset());
+                System.out.println("Sent message "  +result.getRecordMetadata().topic()+ " to partition " + result.getRecordMetadata().partition() + " with offset " + result.getRecordMetadata().offset());
             } else {
                 System.out.println("Unable to send message '" + userList + "': " + ex.getMessage());
             }

@@ -17,20 +17,18 @@ import java.util.Map;
 
 @Configuration
 public class KafkaConfig {
-
-    // Admin for managing Kafka topics and configurations
     @Bean
     public KafkaAdmin kafkaAdmin() {
-        return new KafkaAdmin(Map.of("bootstrap.servers", "localhost:9092,localhost:9093"));
+        return new KafkaAdmin(Map.of(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093"
+        ));
     }
 
-    // Create a new topic with 3 partitions and replication factor of 3
     @Bean
-    public NewTopic newTopic() {
-        return new NewTopic("add_users", 4, (short) 2) ;
+    public NewTopic createTopic() {
+        return new NewTopic("add_users", 2, (short) 2) // 2 partitions, replication factor 2
+                .configs(Map.of(TopicConfig.RETENTION_MS_CONFIG, "604800000")); // 7 days retention
     }
-
-
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         return new DefaultKafkaProducerFactory<>(Map.of(
